@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ProductCard from "@/components/ProductCard";
 import { Product } from "@/types/product";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 // Временные данные для демонстрации
 const DEMO_PRODUCTS: Product[] = [
@@ -33,7 +33,27 @@ const Index = () => {
   const [products] = useState<Product[]>(DEMO_PRODUCTS);
 
   const handleAddToCart = (product: Product) => {
-    // В реальном приложении здесь будет логика добавления в корзину
+    // Get current cart items
+    const currentCart = JSON.parse(localStorage.getItem("cart") || "[]");
+    
+    // Check if product already exists in cart
+    const existingItemIndex = currentCart.findIndex((item: any) => item.id === product.id);
+    
+    if (existingItemIndex > -1) {
+      // If product exists, increment quantity
+      currentCart[existingItemIndex].quantity += 1;
+    } else {
+      // If product doesn't exist, add it with quantity 1
+      currentCart.push({ ...product, quantity: 1 });
+    }
+    
+    // Save updated cart to localStorage
+    localStorage.setItem("cart", JSON.stringify(currentCart));
+    
+    // Dispatch custom event to update cart counter
+    window.dispatchEvent(new Event("cartUpdated"));
+    
+    // Show toast notification
     toast({
       title: "Added to cart",
       description: `${product.name} has been added to your cart.`,

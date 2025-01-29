@@ -1,32 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CartItem } from "@/types/product";
 import { Minus, Plus, Trash2 } from "lucide-react";
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      name: "Minimal Chair",
-      description: "A comfortable minimal chair for your home",
-      price: 199,
-      image: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=500",
-      quantity: 1,
-    },
-  ]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+  useEffect(() => {
+    const items = JSON.parse(localStorage.getItem("cart") || "[]");
+    setCartItems(items);
+  }, []);
 
   const updateQuantity = (itemId: number, change: number) => {
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === itemId
-          ? { ...item, quantity: Math.max(1, item.quantity + change) }
-          : item
-      )
-    );
+    const updatedItems = cartItems.map((item) => {
+      if (item.id === itemId) {
+        const newQuantity = Math.max(1, item.quantity + change);
+        return { ...item, quantity: newQuantity };
+      }
+      return item;
+    });
+
+    setCartItems(updatedItems);
+    localStorage.setItem("cart", JSON.stringify(updatedItems));
+    window.dispatchEvent(new Event("cartUpdated"));
   };
 
   const removeItem = (itemId: number) => {
-    setCartItems((items) => items.filter((item) => item.id !== itemId));
+    const updatedItems = cartItems.filter((item) => item.id !== itemId);
+    setCartItems(updatedItems);
+    localStorage.setItem("cart", JSON.stringify(updatedItems));
+    window.dispatchEvent(new Event("cartUpdated"));
   };
 
   const total = cartItems.reduce(
