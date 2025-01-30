@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Index from "./pages/Index";
 import Cart from "./pages/Cart";
-import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,7 +21,6 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/cart" element={<Cart />} />
-            <Route path="/profile" element={<Profile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
