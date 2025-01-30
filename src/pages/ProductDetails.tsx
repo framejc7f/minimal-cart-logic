@@ -2,6 +2,15 @@ import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Product } from "@/types/product";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { Card, CardContent } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -34,17 +43,14 @@ const ProductDetails = () => {
   ];
 
   const product = DEMO_PRODUCTS.find((p) => p.id === Number(id));
-
-  if (!product) {
-    return <div className="container mx-auto px-4 pt-24">Product not found</div>;
-  }
+  const relatedProducts = DEMO_PRODUCTS.filter((p) => p.id !== Number(id));
 
   const handleAddToCart = () => {
     // Get current cart items
     const currentCart = JSON.parse(localStorage.getItem("cart") || "[]");
     
     // Check if product already exists in cart
-    const existingItemIndex = currentCart.findIndex((item: any) => item.id === product.id);
+    const existingItemIndex = currentCart.findIndex((item: any) => item.id === product?.id);
     
     if (existingItemIndex > -1) {
       // If product exists, increment quantity
@@ -63,13 +69,17 @@ const ProductDetails = () => {
     // Show toast notification
     toast({
       title: "Added to cart",
-      description: `${product.name} has been added to your cart.`,
+      description: `${product?.name} has been added to your cart.`,
     });
   };
 
+  if (!product) {
+    return <div className="container mx-auto px-4 pt-24">Product not found</div>;
+  }
+
   return (
     <div className="container mx-auto px-4 pt-24">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
         <div className="aspect-square overflow-hidden rounded-lg">
           <img
             src={product.image}
@@ -88,6 +98,35 @@ const ProductDetails = () => {
             Add to Cart
           </Button>
         </div>
+      </div>
+
+      <div className="mt-16">
+        <h2 className="text-2xl font-bold mb-8">Смотрите также</h2>
+        <Carousel className="w-full max-w-5xl mx-auto">
+          <CarouselContent>
+            {relatedProducts.map((relatedProduct) => (
+              <CarouselItem key={relatedProduct.id} className="md:basis-1/2 lg:basis-1/3">
+                <Link to={`/product/${relatedProduct.id}`}>
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="aspect-square overflow-hidden rounded-lg mb-4">
+                        <img
+                          src={relatedProduct.image}
+                          alt={relatedProduct.name}
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                      <h3 className="font-semibold mb-2">{relatedProduct.name}</h3>
+                      <p className="text-lg font-semibold">${relatedProduct.price}</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
       </div>
     </div>
   );
