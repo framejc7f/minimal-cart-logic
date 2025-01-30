@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import Index from "./pages/Index";
 import Cart from "./pages/Cart";
 import NotFound from "./pages/NotFound";
+import ProductDetails from "./pages/ProductDetails";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
