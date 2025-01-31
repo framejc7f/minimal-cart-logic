@@ -89,7 +89,7 @@ const Navbar = () => {
       </div>
 
       <Dialog open={isCartOpen} onOpenChange={setIsCartOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Ваш заказ:</DialogTitle>
           </DialogHeader>
