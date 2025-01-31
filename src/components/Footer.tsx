@@ -27,10 +27,9 @@ const Footer = () => {
           <div>
             <h3 className="font-semibold text-lg mb-2">Информация</h3>
             <div className="space-y-2">
-              <Link to="/" className="block text-gray-600 hover:text-gray-900">О нас</Link>
-              <Link to="/" className="block text-gray-600 hover:text-gray-900">Доставка</Link>
-              <Link to="/" className="block text-gray-600 hover:text-gray-900">Оплата</Link>
-              <Link to="/" className="block text-gray-600 hover:text-gray-900">Контакты</Link>
+              <Link to="/about" className="block text-gray-600 hover:text-gray-900">О нас</Link>
+              <Link to="/delivery" className="block text-gray-600 hover:text-gray-900">Доставка</Link>
+              <Link to="/payment" className="block text-gray-600 hover:text-gray-900">Оплата</Link>
             </div>
           </div>
           

@@ -7,6 +7,9 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Index from "./pages/Index";
 import Cart from "./pages/Cart";
+import About from "./pages/About";
+import Delivery from "./pages/Delivery";
+import Payment from "./pages/Payment";
 import NotFound from "./pages/NotFound";
 import ProductDetails from "./pages/ProductDetails";
 
@@ -24,6 +27,9 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/cart" element={<Cart />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/delivery" element={<Delivery />} />
+              <Route path="/payment" element={<Payment />} />
               <Route path="/product/:id" element={<ProductDetails />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
