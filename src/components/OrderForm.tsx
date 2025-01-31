@@ -46,6 +46,22 @@ const cities = [
 const OrderForm = ({ formData, setFormData }: OrderFormProps) => {
   const [open, setOpen] = useState(false);
 
+  // Add console logs to help debug the issue
+  console.log("Current formData:", formData);
+  console.log("Cities array:", cities);
+
+  const handleCitySelect = (cityLabel: string) => {
+    const selectedCity = cities.find((city) => city.label === cityLabel);
+    if (selectedCity) {
+      setFormData({
+        ...formData,
+        city: selectedCity.label,
+        region: selectedCity.region,
+      });
+    }
+    setOpen(false);
+  };
+
   return (
     <div className="space-y-4">
       <div>
@@ -81,7 +97,7 @@ const OrderForm = ({ formData, setFormData }: OrderFormProps) => {
               className="w-full justify-between"
             >
               {formData.city
-                ? cities.find((city) => city.label === formData.city)?.label
+                ? cities.find((city) => city.label === formData.city)?.label || "Выберите город..."
                 : "Выберите город..."}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
@@ -94,14 +110,8 @@ const OrderForm = ({ formData, setFormData }: OrderFormProps) => {
                 {cities.map((city) => (
                   <CommandItem
                     key={city.value}
-                    onSelect={() => {
-                      setFormData({
-                        ...formData,
-                        city: city.label,
-                        region: city.region,
-                      });
-                      setOpen(false);
-                    }}
+                    value={city.value}
+                    onSelect={() => handleCitySelect(city.label)}
                   >
                     <Check
                       className={cn(
