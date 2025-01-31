@@ -5,6 +5,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 const Navbar = () => {
   const [cartItemsCount, setCartItemsCount] = useState(0);
@@ -12,7 +14,12 @@ const Navbar = () => {
   const [formData, setFormData] = useState({
     phone: "",
     email: "",
-    address: "",
+    city: "Екатеринбург",
+    region: "Россия, Свердловская область, г. Екатеринбург",
+    delivery: "cdek",
+    pickupPoint: "",
+    recipient: "",
+    giftCertificate: "",
   });
   const { toast } = useToast();
 
@@ -40,17 +47,23 @@ const Navbar = () => {
     e.preventDefault();
     console.log("Order submitted:", formData);
     toast({
-      title: "Order placed successfully!",
-      description: "We will contact you soon to confirm the delivery.",
+      title: "Заказ успешно оформлен!",
+      description: "Мы свяжемся с вами в ближайшее время для подтверждения.",
     });
     setIsCartOpen(false);
-    // Clear cart after successful order
     localStorage.setItem("cart", "[]");
     window.dispatchEvent(new Event("cartUpdated"));
   };
 
   const cartItems = JSON.parse(localStorage.getItem("cart") || "[]");
-  const total = cartItems.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0);
+  const subtotal = cartItems.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0);
+  const deliveryPrices = {
+    cdek: 672.5,
+    post: 776.0,
+    cnf: 2000.0,
+    international: 4500.0
+  };
+  const total = subtotal + (deliveryPrices[formData.delivery as keyof typeof deliveryPrices] || 0);
 
   return (
     <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b">
@@ -76,52 +89,132 @@ const Navbar = () => {
       </div>
 
       <Dialog open={isCartOpen} onOpenChange={setIsCartOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Complete your order</DialogTitle>
+            <DialogTitle>Ваш заказ:</DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <h4 className="font-medium">Cart Items</h4>
               {cartItems.map((item: any) => (
-                <div key={item.id} className="flex justify-between text-sm">
-                  <span>{item.name} x{item.quantity}</span>
-                  <span>${item.price * item.quantity}</span>
+                <div key={item.id} className="flex justify-between items-center border-b pb-2">
+                  <div className="flex gap-4">
+                    <img src={item.image} alt={item.name} className="w-12 h-12 object-cover rounded" />
+                    <div>
+                      <div className="font-medium">{item.name}</div>
+                      <div className="text-sm text-gray-500">Размер: S</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <span>{item.quantity}</span>
+                    <span className="font-medium">{item.price} ₽</span>
+                  </div>
                 </div>
               ))}
-              <div className="pt-2 border-t">
-                <div className="flex justify-between font-medium">
-                  <span>Total</span>
-                  <span>${total}</span>
-                </div>
+              <div className="flex justify-between font-medium pt-2">
+                <span>Сумма:</span>
+                <span>{subtotal} ₽</span>
               </div>
             </div>
             
             <div className="space-y-4">
-              <Input
-                type="tel"
-                placeholder="Phone number"
-                required
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              />
-              <Input
-                type="email"
-                placeholder="Email"
-                required
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              />
-              <Input
-                placeholder="Delivery address"
-                required
-                value={formData.address}
-                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              />
+              <div>
+                <Label>Номер телефона*</Label>
+                <Input
+                  type="tel"
+                  placeholder="+7 (999) 999-99-99"
+                  required
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                />
+              </div>
+
+              <div>
+                <Label>Email*</Label>
+                <Input
+                  type="email"
+                  placeholder="example@gmail.com"
+                  required
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                />
+              </div>
+
+              <div>
+                <Label>Доставка</Label>
+                <div className="space-y-2">
+                  <Input
+                    placeholder="Город"
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                  />
+                  <div className="text-sm text-gray-500">{formData.region}</div>
+                </div>
+              </div>
+
+              <RadioGroup
+                value={formData.delivery}
+                onValueChange={(value) => setFormData({ ...formData, delivery: value })}
+                className="space-y-2"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="cdek" id="cdek" />
+                  <Label htmlFor="cdek">СДЭК от 3 дней, от 672.5 ₽</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="post" id="post" />
+                  <Label htmlFor="post">Отправка Почтой России от 1 дня, от 776.00 ₽</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="cnf" id="cnf" />
+                  <Label htmlFor="cnf">CNF от 7 дней, 2 000 ₽</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="international" id="international" />
+                  <Label htmlFor="international">Европа / Америка от 20 дней, 4 500 ₽</Label>
+                </div>
+              </RadioGroup>
+
+              <div>
+                <Label>Пункт получения</Label>
+                <Input
+                  placeholder="Выберите пункт получения"
+                  value={formData.pickupPoint}
+                  onChange={(e) => setFormData({ ...formData, pickupPoint: e.target.value })}
+                />
+              </div>
+
+              <div>
+                <Label>Получатель (ФИО полностью)</Label>
+                <Input
+                  placeholder="Иванов Иван Иванович"
+                  required
+                  value={formData.recipient}
+                  onChange={(e) => setFormData({ ...formData, recipient: e.target.value })}
+                />
+              </div>
+
+              <div>
+                <Label>Подарочный сертификат</Label>
+                <Input
+                  value={formData.giftCertificate}
+                  onChange={(e) => setFormData({ ...formData, giftCertificate: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span>Регион доставки:</span>
+                <span>{formData.region}</span>
+              </div>
+              <div className="flex justify-between font-medium">
+                <span>Итоговая сумма:</span>
+                <span>{total} ₽</span>
+              </div>
             </div>
             
-            <Button type="submit" className="w-full">
-              Place Order
+            <Button type="submit" className="w-full bg-black hover:bg-gray-800">
+              Перейти к оплате
             </Button>
           </form>
         </DialogContent>
