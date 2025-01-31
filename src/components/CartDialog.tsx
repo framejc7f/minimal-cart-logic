@@ -5,6 +5,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
+import CartItems from "./CartItems";
+import OrderForm from "./OrderForm";
+import OrderSummary from "./OrderSummary";
 
 interface CartDialogProps {
   isOpen: boolean;
