@@ -1,6 +1,22 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface OrderFormProps {
   formData: {
@@ -16,7 +32,20 @@ interface OrderFormProps {
   setFormData: (data: any) => void;
 }
 
+const cities = [
+  { value: "moscow", label: "Москва", region: "Россия, г. Москва" },
+  { value: "spb", label: "Санкт-Петербург", region: "Россия, г. Санкт-Петербург" },
+  { value: "ekb", label: "Екатеринбург", region: "Россия, Свердловская область, г. Екатеринбург" },
+  { value: "nsk", label: "Новосибирск", region: "Россия, Новосибирская область, г. Новосибирск" },
+  { value: "kzn", label: "Казань", region: "Россия, Республика Татарстан, г. Казань" },
+  { value: "nnov", label: "Нижний Новгород", region: "Россия, Нижегородская область, г. Нижний Новгород" },
+  { value: "chel", label: "Челябинск", region: "Россия, Челябинская область, г. Челябинск" },
+  { value: "krd", label: "Краснодар", region: "Россия, Краснодарский край, г. Краснодар" },
+];
+
 const OrderForm = ({ formData, setFormData }: OrderFormProps) => {
+  const [open, setOpen] = useState(false);
+
   return (
     <div className="space-y-4">
       <div>
@@ -43,14 +72,51 @@ const OrderForm = ({ formData, setFormData }: OrderFormProps) => {
 
       <div>
         <Label>Доставка</Label>
-        <div className="space-y-2">
-          <Input
-            placeholder="Город"
-            value={formData.city}
-            onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-          />
-          <div className="text-sm text-gray-500">{formData.region}</div>
-        </div>
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className="w-full justify-between"
+            >
+              {formData.city
+                ? cities.find((city) => city.label === formData.city)?.label
+                : "Выберите город..."}
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-full p-0">
+            <Command>
+              <CommandInput placeholder="Поиск города..." />
+              <CommandEmpty>Город не найден.</CommandEmpty>
+              <CommandGroup>
+                {cities.map((city) => (
+                  <CommandItem
+                    key={city.value}
+                    onSelect={() => {
+                      setFormData({
+                        ...formData,
+                        city: city.label,
+                        region: city.region,
+                      });
+                      setOpen(false);
+                    }}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        formData.city === city.label ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    {city.label}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </Command>
+          </PopoverContent>
+        </Popover>
+        <div className="text-sm text-gray-500 mt-1">{formData.region}</div>
       </div>
 
       <RadioGroup
