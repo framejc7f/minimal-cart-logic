@@ -7,6 +7,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from "@/components/ui/command";
 import {
   Popover,
@@ -46,12 +47,11 @@ const cities = [
 const OrderForm = ({ formData, setFormData }: OrderFormProps) => {
   const [open, setOpen] = useState(false);
 
-  // Add console logs to help debug the issue
   console.log("Current formData:", formData);
   console.log("Cities array:", cities);
 
-  const handleCitySelect = (cityLabel: string) => {
-    const selectedCity = cities.find((city) => city.label === cityLabel);
+  const handleCitySelect = (value: string) => {
+    const selectedCity = cities.find((city) => city.value === value);
     if (selectedCity) {
       setFormData({
         ...formData,
@@ -105,24 +105,26 @@ const OrderForm = ({ formData, setFormData }: OrderFormProps) => {
           <PopoverContent className="w-full p-0">
             <Command>
               <CommandInput placeholder="Поиск города..." />
-              <CommandEmpty>Город не найден.</CommandEmpty>
-              <CommandGroup>
-                {cities.map((city) => (
-                  <CommandItem
-                    key={city.value}
-                    value={city.value}
-                    onSelect={() => handleCitySelect(city.label)}
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        formData.city === city.label ? "opacity-100" : "opacity-0"
-                      )}
-                    />
-                    {city.label}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+              <CommandList>
+                <CommandEmpty>Город не найден.</CommandEmpty>
+                <CommandGroup>
+                  {cities.map((city) => (
+                    <CommandItem
+                      key={city.value}
+                      value={city.value}
+                      onSelect={handleCitySelect}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          formData.city === city.label ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                      {city.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
             </Command>
           </PopoverContent>
         </Popover>
