@@ -15,30 +15,34 @@ import ProductDetails from "./pages/ProductDetails";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <div className="min-h-screen bg-gray-50 flex flex-col">
-          <Navbar />
-          <main className="flex-grow">
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/delivery" element={<Delivery />} />
-              <Route path="/payment" element={<Payment />} />
-              <Route path="/product/:id" element={<ProductDetails />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  console.log("App component rendering"); // Debug log
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <BrowserRouter>
+          <Toaster />
+          <Sonner />
+          <div className="min-h-screen bg-gray-50 flex flex-col">
+            <Navbar />
+            <main className="flex-grow">
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/delivery" element={<Delivery />} />
+                <Route path="/payment" element={<Payment />} />
+                <Route path="/product/:id" element={<ProductDetails />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </main>
+            <Footer />
+          </div>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
