@@ -1,3 +1,4 @@
+
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -25,6 +26,7 @@ const ProductDetails = () => {
       description: "A comfortable minimal chair for your home. Made from high-quality materials, this chair combines style and comfort. Perfect for any modern interior.",
       price: 199,
       image: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=500",
+      brand: "Minimal Home"
     },
     {
       id: 2,
@@ -32,6 +34,7 @@ const ProductDetails = () => {
       description: "Elegant desk lamp with adjustable brightness. Features modern design and energy-efficient LED technology. Ideal for work or reading.",
       price: 89,
       image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=500",
+      brand: "Modern Light"
     },
     {
       id: 3,
@@ -39,6 +42,7 @@ const ProductDetails = () => {
       description: "Handcrafted wooden table made from premium materials. Each piece is unique with natural wood grain patterns. Perfect centerpiece for your dining room.",
       price: 299,
       image: "https://images.unsplash.com/photo-1532372320978-9b4d0d359a2b?w=500",
+      brand: "Minimal Home"
     },
   ];
 
