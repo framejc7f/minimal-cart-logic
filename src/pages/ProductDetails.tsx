@@ -1,5 +1,5 @@
 
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Product } from "@/types/product";
@@ -12,10 +12,12 @@ import {
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   // В реальном приложении здесь был бы API запрос
   // Временно используем демо-данные
@@ -83,6 +85,15 @@ const ProductDetails = () => {
 
   return (
     <div className="container mx-auto px-4 pt-24">
+      <Button 
+        variant="ghost" 
+        className="mb-6 flex items-center gap-2 hover:bg-gray-100"
+        onClick={() => navigate(-1)}
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Назад
+      </Button>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
         <div className="aspect-square overflow-hidden rounded-lg">
           <img
