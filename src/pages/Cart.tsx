@@ -1,7 +1,8 @@
+
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CartItem } from "@/types/product";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import CartItems from "@/components/CartItems";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -19,7 +20,7 @@ const Cart = () => {
       }
       return item;
     });
-
+    
     setCartItems(updatedItems);
     localStorage.setItem("cart", JSON.stringify(updatedItems));
     window.dispatchEvent(new Event("cartUpdated"));
@@ -44,48 +45,13 @@ const Cart = () => {
         <p className="text-gray-500 text-center py-8">Your cart is empty</p>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-4">
-            {cartItems.map((item) => (
-              <div
-                key={item.id}
-                className="flex gap-4 bg-white p-4 rounded-lg border"
-              >
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-24 h-24 object-cover rounded"
-                />
-                <div className="flex-1">
-                  <h3 className="font-medium">{item.name}</h3>
-                  <p className="text-gray-600">${item.price}</p>
-                  <div className="flex items-center gap-2 mt-2">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => updateQuantity(item.id, -1)}
-                    >
-                      <Minus className="h-4 w-4" />
-                    </Button>
-                    <span className="w-8 text-center">{item.quantity}</span>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => updateQuantity(item.id, 1)}
-                    >
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="ml-auto text-red-500 hover:text-red-600"
-                      onClick={() => removeItem(item.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="lg:col-span-2">
+            <CartItems 
+              items={cartItems} 
+              subtotal={total} 
+              onUpdateQuantity={updateQuantity}
+              onRemove={removeItem}
+            />
           </div>
           <div className="bg-white p-6 rounded-lg border h-fit">
             <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
