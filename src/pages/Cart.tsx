@@ -40,9 +40,9 @@ const Cart = () => {
 
   return (
     <div className="container mx-auto px-4 pt-24 pb-12">
-      <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
+      <h1 className="text-3xl font-bold mb-8">Корзина</h1>
       {cartItems.length === 0 ? (
-        <p className="text-gray-500 text-center py-8">Your cart is empty</p>
+        <p className="text-gray-500 text-center py-8">Ваша корзина пуста</p>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
@@ -54,25 +54,25 @@ const Cart = () => {
             />
           </div>
           <div className="bg-white p-6 rounded-lg border h-fit">
-            <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+            <h2 className="text-xl font-semibold mb-4">Итого заказа</h2>
             <div className="space-y-2 mb-4">
               <div className="flex justify-between">
-                <span>Subtotal</span>
-                <span>${total}</span>
+                <span>Подытог</span>
+                <span>{total} ₽</span>
               </div>
               <div className="flex justify-between">
-                <span>Shipping</span>
-                <span>Free</span>
+                <span>Доставка</span>
+                <span>Бесплатно</span>
               </div>
               <div className="border-t pt-2 mt-2">
                 <div className="flex justify-between font-semibold">
-                  <span>Total</span>
-                  <span>${total}</span>
+                  <span>Итого</span>
+                  <span>{total} ₽</span>
                 </div>
               </div>
             </div>
             <Button className="w-full bg-black hover:bg-gray-800">
-              Checkout
+              Оформить заказ
             </Button>
           </div>
         </div>

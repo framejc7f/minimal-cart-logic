@@ -29,6 +29,7 @@ const CartItems = ({ items, subtotal, onUpdateQuantity, onRemove }: CartItemsPro
                 size="icon"
                 className="h-8 w-8"
                 onClick={() => onUpdateQuantity?.(item.id, -1)}
+                disabled={item.quantity <= 1}
               >
                 <Minus className="h-4 w-4" />
               </Button>
@@ -42,7 +43,7 @@ const CartItems = ({ items, subtotal, onUpdateQuantity, onRemove }: CartItemsPro
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
-            <span className="font-medium min-w-20 text-right">{item.price} ₽</span>
+            <span className="font-medium min-w-20 text-right">{item.price * item.quantity} ₽</span>
             <Button
               variant="ghost"
               size="icon"
