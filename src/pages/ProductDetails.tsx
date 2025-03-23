@@ -12,12 +12,14 @@ import {
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Minus, Plus } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [quantity, setQuantity] = useState(0);
 
   // В реальном приложении здесь был бы API запрос
   // Временно используем демо-данные
@@ -51,31 +53,60 @@ const ProductDetails = () => {
   const product = DEMO_PRODUCTS.find((p) => p.id === Number(id));
   const relatedProducts = DEMO_PRODUCTS.filter((p) => p.id !== Number(id));
 
-  const handleAddToCart = () => {
-    // Get current cart items
+  // Check if product is already in cart and set initial quantity
+  useEffect(() => {
     const currentCart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const existingItem = currentCart.find((item: any) => item.id === Number(id));
     
-    // Check if product already exists in cart
+    if (existingItem) {
+      setQuantity(existingItem.quantity);
+    }
+  }, [id]);
+
+  const increaseQuantity = () => {
+    const newQuantity = quantity + 1;
+    setQuantity(newQuantity);
+    updateCart(newQuantity);
+  };
+
+  const decreaseQuantity = () => {
+    if (quantity <= 1) {
+      setQuantity(0);
+      // Remove from cart
+      const currentCart = JSON.parse(localStorage.getItem("cart") || "[]");
+      const updatedCart = currentCart.filter((item: any) => item.id !== product?.id);
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
+      window.dispatchEvent(new Event("cartUpdated"));
+    } else {
+      const newQuantity = quantity - 1;
+      setQuantity(newQuantity);
+      updateCart(newQuantity);
+    }
+  };
+
+  const updateCart = (newQuantity: number) => {
+    const currentCart = JSON.parse(localStorage.getItem("cart") || "[]");
     const existingItemIndex = currentCart.findIndex((item: any) => item.id === product?.id);
     
     if (existingItemIndex > -1) {
-      // If product exists, increment quantity
-      currentCart[existingItemIndex].quantity += 1;
+      currentCart[existingItemIndex].quantity = newQuantity;
     } else {
-      // If product doesn't exist, add it with quantity 1
-      currentCart.push({ ...product, quantity: 1 });
+      currentCart.push({ ...product, quantity: newQuantity });
     }
     
-    // Save updated cart to localStorage
     localStorage.setItem("cart", JSON.stringify(currentCart));
-    
-    // Dispatch custom event to update cart counter
     window.dispatchEvent(new Event("cartUpdated"));
+  };
+
+  const handleAddToCart = () => {
+    // Set quantity to 1 when adding to cart
+    setQuantity(1);
+    updateCart(1);
     
     // Show toast notification
     toast({
-      title: "Added to cart",
-      description: `${product?.name} has been added to your cart.`,
+      title: "Добавлено в корзину",
+      description: `${product?.name} добавлен в вашу корзину.`,
     });
   };
 
@@ -106,12 +137,35 @@ const ProductDetails = () => {
           <h1 className="text-3xl font-bold">{product.name}</h1>
           <p className="text-2xl font-semibold">${product.price}</p>
           <p className="text-gray-600">{product.description}</p>
-          <Button
-            onClick={handleAddToCart}
-            className="w-full md:w-auto bg-black hover:bg-gray-800 text-white"
-          >
-            Add to Cart
-          </Button>
+          
+          {quantity > 0 ? (
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-10 w-10"
+                onClick={decreaseQuantity}
+              >
+                <Minus className="h-4 w-4" />
+              </Button>
+              <span className="w-12 text-center text-xl">{quantity}</span>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-10 w-10"
+                onClick={increaseQuantity}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+          ) : (
+            <Button
+              onClick={handleAddToCart}
+              className="w-full md:w-auto bg-black hover:bg-gray-800 text-white"
+            >
+              Add to Cart
+            </Button>
+          )}
         </div>
       </div>
 
