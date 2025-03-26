@@ -1,4 +1,3 @@
-
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -13,7 +12,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Minus, Plus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -52,16 +51,6 @@ const ProductDetails = () => {
 
   const product = DEMO_PRODUCTS.find((p) => p.id === Number(id));
   const relatedProducts = DEMO_PRODUCTS.filter((p) => p.id !== Number(id));
-
-  // Check if product is already in cart and set initial quantity
-  useEffect(() => {
-    const currentCart = JSON.parse(localStorage.getItem("cart") || "[]");
-    const existingItem = currentCart.find((item: any) => item.id === Number(id));
-    
-    if (existingItem) {
-      setQuantity(existingItem.quantity);
-    }
-  }, [id]);
 
   const increaseQuantity = () => {
     const newQuantity = quantity + 1;

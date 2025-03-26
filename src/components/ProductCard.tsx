@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Product } from "@/types/product";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Minus, Plus } from "lucide-react";
 
 interface ProductCardProps {
@@ -12,21 +12,6 @@ interface ProductCardProps {
 
 const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
   const [quantity, setQuantity] = useState(0);
-
-  useEffect(() => {
-    const checkCartQuantity = () => {
-      const cartItems = JSON.parse(localStorage.getItem("cart") || "[]");
-      const existingItem = cartItems.find((item: any) => item.id === product.id);
-      setQuantity(existingItem ? existingItem.quantity : 0);
-    };
-
-    checkCartQuantity();
-    window.addEventListener("cartUpdated", checkCartQuantity);
-    
-    return () => {
-      window.removeEventListener("cartUpdated", checkCartQuantity);
-    };
-  }, [product.id]);
 
   const increaseQuantity = () => {
     const newQuantity = quantity + 1;
