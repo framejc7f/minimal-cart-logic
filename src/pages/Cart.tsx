@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CartItem } from "@/types/product";
 import CartItems from "@/components/CartItems";
+import { useToast } from "@/hooks/use-toast";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const { toast } = useToast();
 
   useEffect(() => {
     const items = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -27,10 +29,16 @@ const Cart = () => {
   };
 
   const removeItem = (itemId: number) => {
+    console.log("Removing item with ID:", itemId);
     const updatedItems = cartItems.filter((item) => item.id !== itemId);
     setCartItems(updatedItems);
     localStorage.setItem("cart", JSON.stringify(updatedItems));
     window.dispatchEvent(new Event("cartUpdated"));
+    
+    toast({
+      title: "Товар удален",
+      description: "Товар был удален из корзины.",
+    });
   };
 
   const total = cartItems.reduce(

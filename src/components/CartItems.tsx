@@ -48,7 +48,10 @@ const CartItems = ({ items, subtotal, onUpdateQuantity, onRemove }: CartItemsPro
               variant="ghost"
               size="icon"
               className="text-red-500 hover:text-red-600 h-8 w-8"
-              onClick={() => onRemove?.(item.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onRemove) onRemove(item.id);
+              }}
             >
               <Trash2 className="h-4 w-4" />
             </Button>
