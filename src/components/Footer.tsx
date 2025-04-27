@@ -36,7 +36,7 @@ const Footer = () => {
           <div>
             <h3 className="font-semibold text-lg mb-2">Мы в соцсетях</h3>
             <div className="flex gap-4">
-              <a href="https://t.me/example" target="_blank" rel="noopener noreferrer" 
+              <a href="https://t.me/stepbystepsneakers" target="_blank" rel="noopener noreferrer" 
                 className="text-gray-600 hover:text-gray-900">
                 <MessageCircle className="w-5 h-5" />
               </a>
@@ -53,7 +53,7 @@ const Footer = () => {
         </div>
         
         <div className="border-t mt-4 pt-4 text-center text-gray-600">
-          <p>© 2024 Все права защищены</p>
+          <p>© 2025 Все права защищены</p>
         </div>
       </div>
     </footer>
