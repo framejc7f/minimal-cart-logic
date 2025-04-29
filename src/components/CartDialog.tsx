@@ -1,12 +1,11 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { useState, useEffect } from "react"; // Import useEffect
+import { useState, useEffect } from "react";
 import CartItems from "./CartItems";
 import OrderForm from "./OrderForm";
 import OrderSummary from "./OrderSummary";
-import { CartItem } from "@/types/product"; // Import CartItem type
-
+import { CartItem } from "@/types/product";
 interface CartDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
@@ -24,11 +23,9 @@ const CartDialog = ({ isOpen, onOpenChange }: CartDialogProps) => {
     giftCertificate: "",
   });
 
-  // --- Start Added Code ---
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const { toast: uiToast } = useToast(); // Rename to avoid conflict with hook's toast
+  const { toast: uiToast } = useToast(); 
 
-  // Load cart items from localStorage when dialog opens or cart updates externally
   useEffect(() => {
     const loadCart = () => {
       const items = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -36,16 +33,15 @@ const CartDialog = ({ isOpen, onOpenChange }: CartDialogProps) => {
     };
 
     if (isOpen) {
-      loadCart(); // Load when dialog becomes visible
+      loadCart(); 
     }
 
-    // Listen for external cart updates (e.g., from product page)
     window.addEventListener("cartUpdated", loadCart);
 
     return () => {
       window.removeEventListener("cartUpdated", loadCart);
     };
-  }, [isOpen]); // Rerun effect when isOpen changes
+  }, [isOpen]); 
 
   const updateCartStorageAndNotify = (updatedItems: CartItem[]) => {
     localStorage.setItem("cart", JSON.stringify(updatedItems));
@@ -55,7 +51,7 @@ const CartDialog = ({ isOpen, onOpenChange }: CartDialogProps) => {
   const handleUpdateQuantity = (itemId: number, change: number) => {
     const updatedItems = cartItems.map((item) => {
       if (item.id === itemId) {
-        const newQuantity = Math.max(1, item.quantity + change); // Ensure quantity doesn't go below 1
+        const newQuantity = Math.max(1, item.quantity + change);
         return { ...item, quantity: newQuantity };
       }
       return item;
@@ -73,9 +69,7 @@ const CartDialog = ({ isOpen, onOpenChange }: CartDialogProps) => {
       description: "Товар был удален из корзины.",
     });
   };
-  // --- End Added Code ---
 
-  // Calculate subtotal and total based on the dialog's state
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const deliveryPrices = {
     cdek: 672.5,
@@ -83,20 +77,18 @@ const CartDialog = ({ isOpen, onOpenChange }: CartDialogProps) => {
     cnf: 2000.0,
     international: 4500.0
   };
-  // Ensure delivery key exists before accessing
   const deliveryCost = deliveryPrices[formData.delivery as keyof typeof deliveryPrices] || 0;
   const total = subtotal + deliveryCost;
 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Order submitted:", formData, cartItems); // Include cartItems in log
-    uiToast({ // Use renamed toast function
+    console.log("Order submitted:", formData, cartItems); 
+    uiToast({ 
       title: "Заказ успешно оформлен!",
       description: "Мы свяжемся с вами в ближайшее время для подтверждения.",
     });
     onOpenChange(false);
-    // Clear cart after successful submission
     setCartItems([]);
     updateCartStorageAndNotify([]);
   };
